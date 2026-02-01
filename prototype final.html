@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<index.html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grade 12 ABM Flashcards</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(to bottom right, #f0f4f8, #e2e8f0);
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      padding: 50px 20px 20px 20px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1rem;
+      color: #555;
+    }
+
+    .buttons {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .buttons button {
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .buttons button.outline {
+      background: white;
+      border: 2px solid #333;
+    }
+
+    .flashcard {
+      width: 450px;
+      height: 270px;
+      background: white;
+      margin: 20px auto;
+      /* Added margin for spacing */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      font-size: 1.2rem;
+      text-align: center;
+      padding: 20px;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+      position: relative;
+      /* Required for absolute positioning of back */
+      perspective: 1000px;
+    }
+
+    .flashcard.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .flashcard .front,
+    .flashcard .back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backface-visibility: hidden;
+      /* Hide the back side initially */
+      -webkit-backface-visibility: hidden;
+    }
+
+    .flashcard .back {
+      transform: rotateY(180deg);
+      /* Rotate the back side to face forward when flipped */
+    }
+
+    .subject-buttons {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .subject-buttons button {
+      margin: 5px;
+      padding: 8px 15px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .subject-buttons button.active {
+      background: #333;
+      color: white;
+    }
+
+    .navigation {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .navigation button {
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #555;
+      margin-top: auto;
+      /* Push footer to the bottom */
+      padding: 20px 0;
+      /* Add padding for better spacing */
+    }
+
+    #about-page {
+      padding: 20px;
+      text-align: center;
+    }
+
+    #about-page h1 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+
+    #about-page p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="home-page">
+    <header>
+      <h1>Grade 12 ABM Flashcards Learning System</h1>
+      <p>A digital learning tool for Senior High School ABM students.</p>
+    </header>
+    <div class="buttons">
+      <button onclick="showFlashcards()">Start Learning</button>
+      <button class="outline" onclick="showAbout()">About Project</button>
+    </div>
+  </div>
+
+  <div id="about-page" style="display:none;">
+    <h1>About This Project</h1>
+    <p>This website is a submission-ready educational project developed for Grade 12 students under the Accountancy,
+      Business, and Management (ABM) strand. It provides interactive flashcards aligned with the Senior High School
+      curriculum to help students review key concepts in business-related subjects.</p>
+    <div class="buttons">
+      <button onclick="showHome()">Back to Home</button>
+    </div>
+  </div>
+
+  <div id="flashcards-page" style="display:none;">
+    <header>
+      <h1>ABM Flashcards</h1>
+      <p>Subject Review • Grade 12 ABM</p>
+    </header>
+
+    <div class="subject-buttons" id="subject-buttons"></div>
+
+    <div class="flashcard" id="flashcard">
+      <div class="front"></div>
+      <div class="back"></div>
+    </div>
+
+    <div class="navigation">
+      <button onclick="prevCard()">Previous</button>
+      <button onclick="nextCard()">Next</button>
+    </div>
+
+    <div class="buttons">
+      <button class="outline" onclick="showHome()">Back to Home</button>
+    </div>
+  </div>
+
+  <footer>
+    © 2026 Grade 12 ABM Flashcards Learning System • Academic Use Only
+  </footer>
+
+  <script>
+    const subjects = {
+      "Business Mathematics": [
+        { front: "Elasticity of Demand", back: "Measure of responsiveness of quantity demanded to price changes." },
+        { front: "Elasticity of Supply", back: "Measure of responsiveness of quantity supplied to price changes." },
+        { front: "Monetary Policy", back: "Central bank actions to control money supply and interest rates." },
+        { front: "Fiscal Policy", back: "Government adjustments to spending and taxation to influence economy." },
+        { front: "Business Cycle", back: "Fluctuations in economic activity over time." },
+        { front: "Unemployment", back: "Percentage of labor force without jobs." },
+        { front: "Trade Balance", back: "Difference between exports and imports." },
+        { front: "Exchange Rate", back: "Price of one currency in terms of another." },
+        { front: "Recession", back: "Period of economic decline, typically two quarters of negative GDP growth." },
+        { front: "Supply-Side Economics", back: "Economic growth from improving production efficiency." },
+        { front: "Demand-Side Economics", back: "Economic growth from increasing consumption and demand." },
+        { front: "Market Intervention", back: "Government involvement to regulate or support markets." },
+      ],
+      "Business Ethics & Social Responsibility": [
+        { front: "Business Ethics", back: "Moral standards that guide behavior in business organizations." },
+        { front: "Corporate Social Responsibility", back: "A company’s responsibility toward society and the environment." },
+        { front: "Stakeholders", back: "Individuals or groups affected by business decisions." },
+        { front: "Code of Ethics", back: "A set of principles that guide ethical business conduct." },
+        { front: "Sustainability", back: "Meeting needs without compromising future generations." },
+        { front: "Conflict of Interest", back: "A situation where personal interest conflicts with professional duties." },
+        { front: "Transparency", back: "Being open, honest, and accountable in business operations." },
+        { front: "Whistleblowing", back: "Reporting unethical or illegal activities in an organization." },
+        { front: "Fair Trade", back: "Ensuring equitable trading conditions for producers." },
+        { front: "Environmental Responsibility", back: "Taking actions to protect the environment." },
+        { front: "Ethical Leadership", back: "Leading with integrity and moral principles." },
+        { front: "Corporate Governance", back: "System of rules and practices guiding a company ethically." },
+        { front: "Philanthropy", back: "Business contributing to social welfare and causes." },
+        { front: "Social Impact Assessment", back: "Analyzing effects of business actions on society." },
+        { front: "Consumer Protection", back: "Ensuring rights and safety of consumers." },
+        { front: "Accountability", back: "Being responsible for actions and decisions." },
+        { front: "Ethical Dilemma", back: "Situation with competing moral choices." },
+        { front: "Values-Driven Management", back: "Management guided by core ethical values." },
+        { front: "Responsible Marketing", back: "Marketing that does not deceive or harm consumers." },
+        { front: "Employee Rights", back: "Ensuring fair treatment and welfare of employees." },
+      ],
+      "Entrepreneurship": [
+        { front: "Entrepreneurship", back: "The process of creating, organizing, and managing a business." },
+        { front: "Entrepreneur", back: "A person who takes risks to start and manage a business." },
+        { front: "Business Plan", back: "A written document describing business goals and strategies." },
+        { front: "Market Research", back: "Collecting and analyzing data about target customers and market." },
+        { front: "SWOT Analysis", back: "Analyzing Strengths, Weaknesses, Opportunities, and Threats." },
+        { front: "Funding Sources", back: "Capital from investors, loans, grants, or personal savings." },
+        { front: "Marketing Strategy", back: "Plan to promote and sell products or services effectively." },
+        { front: "Risk Management", back: "Identifying and minimizing business risks." },
+        { front: "Business Model", back: "Plan for creating, delivering, and capturing value." },
+        { front: "Customer Segmentation", back: "Dividing market into groups of potential customers." },
+        { front: "Pricing Strategy", back: "Determining the right price for products or services." },
+        { front: "Branding", back: "Creating a unique image and identity for a business." },
+        { front: "Competitive Analysis", back: "Studying competitors to improve business strategy." },
+        { front: "Value Proposition", back: "Statement of benefits offered to customers." },
+        { front: "Lean Startup", back: "Method to develop products efficiently with minimal resources." },
+        { front: "Networking", back: "Building relationships to support business growth." },
+        { front: "Innovation", back: "Creating new products, services, or processes." },
+        { front: "Business Ethics", back: "Applying moral principles in business decisions." },
+        { front: "Scaling a Business", back: "Growing a business sustainably." },
+        { front: "Exit Strategy", back: "Plan for selling or closing a business successfully." },
+      ],
+      "Applied Economics": [
+        { front: "Scarcity", back: "Limited resources relative to unlimited wants." },
+        { front: "Opportunity Cost", back: "Value of the next best alternative forgone." },
+        { front: "Supply", back: "Quantity of a product that producers are willing to sell." },
+        { front: "Demand", back: "Quantity of a product that consumers are willing to buy." },
+        { front: "Market Equilibrium", back: "Point where supply equals demand." },
+        { front: "Inflation", back: "General increase in prices and fall in the purchasing value of money." },
+        { front: "GDP", back: "Total value of goods and services produced in a country." },
+        { front: "GNP", back: "Total value of goods and services produced by a country's residents." },
+        { front: "Economic Growth", back: "Increase in the production of goods and services." },
+        { front: "Recession", back: "Significant decline in economic activity." },
+        { front: "Depression", back: "Prolonged and severe recession." },
+        { front: "Fiscal Policy", back: "Government spending and taxation policies." },
+        { front: "Monetary Policy", back: "Central bank policies to control money supply and interest rates." },
+        { front: "Unemployment Rate", back: "Percentage of labor force that is unemployed." },
+        { front: "Consumer Price Index (CPI)", back: "Measure of the average change in prices paid by urban consumers." },
+      ],
+      "Fundamentals of Accountancy, Business, and Management 2": [
+        { front: "Financial Statements", back: "Reports summarizing a company's financial performance." },
+        { front: "Balance Sheet", back: "Statement of assets, liabilities, and equity at a specific time." },
+        { front: "Income Statement", back: "Report of revenues, expenses, and net income over a period." },
+        { front: "Cash Flow Statement", back: "Report of cash inflows and outflows." },
+        { front: "Assets", back: "Resources owned by a company." },
+        { front: "Liabilities", back: "Obligations of a company to others." },
+        { front: "Equity", back: "Owners' stake in the company." },
+        { front: "Revenue", back: "Income earned from sales of goods or services." },
+        { front: "Expenses", back: "Costs incurred to earn revenue." },
+        { front: "Net Income", back: "Revenue minus expenses." },
+        { front: "Gross Profit", back: "Revenue minus cost of goods sold." },
+        { front: "Operating Expenses", back: "Expenses incurred in the normal course of business." },
+        { front: "Cost of Goods Sold (COGS)", back: "Direct costs of producing goods sold." },
+        { front: "Depreciation", back: "Allocation of asset cost over its useful life." },
+        { front: "Amortization", back: "Allocation of intangible asset cost over its useful life." },
+      ]
+    };
+
+    let currentSubject = Object.keys(subjects)[0];
+    let currentIndex = 0;
+    let flipped = false;
+
+    const flashcardEl = document.getElementById("flashcard");
+    const frontEl = flashcardEl.querySelector(".front");
+    const backEl = flashcardEl.querySelector(".back");
+    const subjectButtonsEl = document.getElementById("subject-buttons");
+
+    function showHome() {
+      document.getElementById("home-page").style.display = "block";
+      document.getElementById("about-page").style.display = "none";
+      document.getElementById("flashcards-page").style.display = "none";
+    }
+
+    function showAbout() {
+      document.getElementById("home-page").style.display = "none";
+      document.getElementById("about-page").style.display = "block";
+      document.getElementById("flashcards-page").style.display = "none";
+    }
+
+    function showFlashcards() {
+      document.getElementById("home-page").style.display = "none";
+      document.getElementById("about-page").style.display = "none";
+      document.getElementById("flashcards-page").style.display = "block";
+      renderSubjectButtons();
+      renderCard();
+    }
+
+    function renderSubjectButtons() {
+      subjectButtonsEl.innerHTML = "";
+      for (let subj of Object.keys(subjects)) {
+        const btn = document.createElement("button");
+        btn.textContent = subj;
+        btn.className = subj === currentSubject ? "active" : "";
+        btn.onclick = () => {
+          currentSubject = subj;
+          currentIndex = 0;
+          flipped = false;
+          renderCard();
+          renderSubjectButtons();
+        };
+        subjectButtonsEl.appendChild(btn);
+      }
+    }
+
+    function renderCard() {
+      const card = subjects[currentSubject][currentIndex];
+      frontEl.textContent = card.front;
+      backEl.textContent = card.back;
+      flashcardEl.className = "flashcard" + (flipped ? " flipped" : "");
+    }
+
+    flashcardEl.onclick = () => {
+      flipped = !flipped;
+      renderCard();
+    };
+
+    function nextCard() {
+      currentIndex = (currentIndex + 1) % subjects[currentSubject].length;
+      flipped = false;
+      renderCard();
+    }
+
+    function prevCard() {
+      currentIndex = (currentIndex - 1 + subjects[currentSubject].length) % subjects[currentSubject].length;
+      flipped = false;
+      renderCard();
+    }
+  </script>
+
+</body>
+
+</html>
